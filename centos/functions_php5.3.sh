@@ -2,10 +2,10 @@
 
 check_installed()
 {
-if [ ! -f "/usr/local/linuxlmp/.installed" ];then
+if [ ! -f "/root/linuxlmp/.installed" ];then
 INSATLL_TYPE="INSTALL"
 else
-echo "You have installed LinuxLMP already."
+echo "You have installed LinuxLMP already.You need a fresh install system."
 exit 1
 fi
 }
@@ -41,7 +41,6 @@ case $tmp_package in
 esac
 }
 package_i
-
 }
 
 custominit()
@@ -55,12 +54,12 @@ printf "Do you want to install PHP?[y/n]"
 read php_i
 echo ""
 
-if [ "$php_i" == "y" ]; then
+if [ $php_i = "y" ]; then
 printf "Do you want to add extra PHP Configure Parameters?[y/n]" 
 read php_conf_i
 echo ""
 
-if [ "$php_conf_i" == "y" ]; then
+if [ $php_conf_i = "y" ]; then
 printf "Please input the extra PHP Configure Parameters(by using space between each Parameters) : "
 read php_conf
 echo "The extra PHP Configure Parameters are $php_conf"
@@ -68,7 +67,7 @@ fi
 
 fi
 
-if [ "$mysql_i" == "y" ] && [ "$php_i" == "y" ];then
+if [ $mysql_i = "y" ] && [ $php_i = "y" ];then
 printf "Do you want to install phpMyAdmin?[y/n]" 
 read phpmyadmin_i
 echo ""
@@ -152,8 +151,8 @@ sync_time()
 #Synchronization time
 rm -rf /etc/localtime
 ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-apt-get update
-apt-get install -y --force-yes ntp ntpdate
+
+yum install -y ntp
 ntpdate -d cn.pool.ntp.org
 date
 }
@@ -161,34 +160,49 @@ date
 install_packages()
 {
 #Install packeages
-apt-get update
-apt-get remove -y --force-yes -q apache* 
-apt-get remove -y --force-yes -q mysql* 
-apt-get remove -y --force-yes -q php*
-apt-get remove -y --force-yes -q autoconf*
-export DEBIAN_FRONTEND=noninteractive
+rpm -qa|grep  httpd
+rpm -e httpd
+rpm -qa|grep mysql
+rpm -e mysql
+rpm -qa|grep php
+rpm -e php
+yum -y remove httpd* mysql* php*
+centosversion=$(cat /etc/redhat-release | grep -o [0-9] | sed 1q)
+if [ "$centosversion" = "5" ];then
+rpm -Uvh ftp://ftp.muug.mb.ca/mirror/fedora/epel/5/x86_64/epel-release-5-4.noarch.rpm
+else
+rpm -Uvh ftp://ftp.pbone.net/mirror/download.fedora.redhat.com/pub/fedora/epel/6/x86_64/epel-release-6-5.noarch.rpm
+fi
 bit=$(getconf LONG_BIT)
 if [ $bit = "64" ]; then
-apt-get install -y --force-yes -q libncurses5-dev bzip2 ia32-libs bison lemon re2c flex expect libmysql++-dev autoconf2.13 gcc g++ libjpeg62-dev libpng12-dev libxml2-dev curl libcurl4-openssl-dev libmcrypt-dev libmhash-dev libfreetype6-dev patch make mcrypt zlib-bin zlib1g-dev libtool libltdl*
+yum -y --disableplugin=fastestmirror install ncurses-devel glibc flex re2c bison gcc automake mhash-devel expect ruby autoconf213 libtool gcc-c++ libjpeg-devel libpng-devel libxml2-devel curl curl-devel libmcrypt-devel freetype-devel patch make zlib-devel libtool-ltdl-devel
 else
-apt-get install -y --force-yes -q libncurses5-dev bzip2 bison lemon re2c flex expect libmysql++-dev autoconf2.13 gcc g++ libjpeg62-dev libpng12-dev libxml2-dev curl libcurl4-openssl-dev libmcrypt-dev libmhash-dev libfreetype6-dev patch make mcrypt zlib-bin zlib1g-dev libtool libltdl*
+yum -y --disableplugin=fastestmirror install ncurses-devel flex re2c bison gcc automake mhash-devel expect ruby autoconf213 libtool gcc-c++ libjpeg-devel libpng-devel libxml2-devel curl curl-devel libmcrypt-devel freetype-devel patch make zlib-devel libtool-ltdl-devel
 fi
 }
 
 install_packages_without_mysql()
 {
-#Install packeages without mysql
-apt-get update
-apt-get remove -y --force-yes -q apache* 
-apt-get remove -y --force-yes -q mysql* 
-apt-get remove -y --force-yes -q php*
-apt-get remove -y --force-yes -q autoconf*
-export DEBIAN_FRONTEND=noninteractive
-bit=$(getconf LONG_BIT)
-if [ "$bit" == "64" ]; then
-apt-get install -y --force-yes -q libncurses5-dev bzip2 ia32-libs bison lemon re2c flex expect autoconf2.13 gcc g++ libjpeg62-dev libpng12-dev libxml2-dev curl libcurl4-openssl-dev libmcrypt-dev libmhash-dev libfreetype6-dev patch make mcrypt libmysql++-dev zlib-bin zlib1g-dev libtool libltdl*
+#Install packeages
+rpm -qa|grep  httpd
+rpm -e httpd
+rpm -qa|grep mysql
+rpm -e mysql
+rpm -qa|grep php
+rpm -e php
+yum -y remove httpd* mysql* php*
+yum -y remove httpd
+centosversion=$(cat /etc/redhat-release | grep -o [0-9] | sed 1q)
+if [ "$centosversion" = "5" ];then
+rpm -Uvh ftp://ftp.muug.mb.ca/mirror/fedora/epel/5/x86_64/epel-release-5-4.noarch.rpm
 else
-apt-get install -y --force-yes -q libncurses5-dev bzip2 bison lemon re2c flex expect autoconf2.13 gcc g++ libjpeg62-dev libpng12-dev libxml2-dev curl libcurl4-openssl-dev libmcrypt-dev libmhash-dev libfreetype6-dev patch make mcrypt libmysql++-dev zlib-bin zlib1g-dev libtool libltdl*
+rpm -Uvh ftp://ftp.pbone.net/mirror/download.fedora.redhat.com/pub/fedora/epel/6/x86_64/epel-release-6-5.noarch.rpm
+fi
+bit=$(getconf LONG_BIT)
+if [ $bit = "64" ]; then
+yum -y --disableplugin=fastestmirror install ncurses-devel glibc flex re2c bison gcc automake mhash-devel expect ruby autoconf213 libtool gcc-c++ libjpeg-devel libpng-devel libxml2-devel curl curl-devel freetype-devel patch make libmcrypt-devel zlib-devel libtool-ltdl-devel
+else
+yum -y --disableplugin=fastestmirror install ncurses-devel flex re2c bison gcc automake mhash-devel expect ruby autoconf213 libtool gcc-c++ libjpeg-devel libpng-devel libxml2-devel curl curl-devel freetype-devel patch make libmcrypt-devel zlib-devel libtool-ltdl-devel
 fi
 }
 
@@ -204,7 +218,7 @@ chmod +x functions.sh
 
 #Install Litespeed
 expect -c "
-spawn /tmp/linuxlmp/lsws-$lsws_ver/install.sh
+spawn /tmp/linuxlmp/lsws-4.1.3/install.sh
 expect \"5RetHEgU10\"
 send \"\r\"
 expect \"5RetHEgU11\"
@@ -248,7 +262,7 @@ chmod +x functions.sh
 
 #Install Litespeed
 expect -c "
-spawn /tmp/linuxlmp/lsws-$lsws_ver/install.sh
+spawn /tmp/linuxlmp/lsws-4.1.3/install.sh
 expect \"5RetHEgU10\"
 send \"\r\"
 expect \"5RetHEgU11\"
@@ -329,7 +343,7 @@ build_php_without_mysql()
 {
 #Build PHP 
 mkdir /usr/local/lsws/phpbuild
-cd /tmp/llsmp
+cd /tmp/linuxlmp
 wget $php_53_source
 wget $php_litespeed_source
 wget $php_53_mail_header_patch_source
@@ -337,7 +351,7 @@ tar zxf $php_53
 tar zxf $php_litespeed
 cd /tmp/linuxlmp/php-$php_53_ver
 patch -p1 < /tmp/linuxlmp/$php_53_mail_header_patch
-mv /tmp/linuxlmp/litespeed /tmp/linuxlmp/php-$php_53_ver/sapi/litespeed/
+mv /tmp/linuxlmp/litespeed /tmp/llsmp/php-$php_53_ver/sapi/litespeed/
 cd /tmp/linuxlmp
 mv php-$php_53_ver /usr/local/lsws/phpbuild
 cd /usr/local/lsws/phpbuild/php-$php_53_ver
@@ -363,7 +377,7 @@ fi
 cp /usr/local/lsws/phpbuild/php-$php_53_ver/sapi/litespeed/php lsphp-$php_53_ver
 ln -sf lsphp-$php_53_ver lsphp5
 chown -R lsadm:lsadm /usr/local/lsws/phpbuild/php-$php_53_ver
-wget http://linuxlmp.googlecode.com/files/php.ini-dist -O /usr/local/lsws/lsphp5/lib/php.ini
+wget http://llsmp.googlecode.com/files/php.ini-dist -O /usr/local/lsws/lsphp5/lib/php.ini
 sed -i '/extension_dir/d' /usr/local/lsws/lsphp5/lib/php.ini
 sed -i '/sendmail_path/d' /usr/local/lsws/lsphp5/lib/php.ini
 sed -i '/smtp_port/a\sendmail_path = \/usr\/sbin\/sendmail -t\n' /usr/local/lsws/lsphp5/lib/php.ini
@@ -373,13 +387,6 @@ mkdir -p /usr/local/lsws/lsphp5/lib/php/extensions/no-debug-non-zts-20090626
 
 install_mysql()
 {
-rm /etc/my.cnf
-rm /etc/mysql/my.cnf
-rm -rf /etc/mysql/
-
-groupadd mysql
-useradd -s /sbin/nologin -g mysql mysql
-
 cd /tmp/linuxlmp
 wget http://linuxlmp.googlecode.com/files/mysql-5.5.27.tar.gz
 tar zxvf mysql-5.5.27.tar.gz
@@ -391,14 +398,12 @@ cd ../
 
 sh scripts/mysql_install_db --basedir=/usr/local/mysql/ --datadir=/var/database/mysql --user=mysql
 
-chown -R mysql /usr/local/mysql/var
-chgrp -R mysql /usr/local/mysql/.
+groupadd mysql
+useradd -s /sbin/nologin -M -g mysql mysql
 
 cp /usr/local/mysql/share/mysql/my-medium.cnf /etc/my.cnf
 sed -i 's/skip-locking/skip-external-locking/g' /etc/my.cnf
-/usr/local/mysql/bin/mysql_install_db --user=mysql --basedir=/usr/local/mysql --datadir=/usr/local/mysql/var
-ln -s /usr/local/mysql/share/mysql /usr/share/
-
+/usr/local/mysql/bin/mysql_install_db --user=mysql
 chown -R mysql /usr/local/mysql/var
 chgrp -R mysql /usr/local/mysql/.
 cp /usr/local/mysql/share/mysql/mysql.server /etc/init.d/mysql
@@ -412,15 +417,16 @@ ldconfig
 
 ln -s /usr/local/mysql/lib/mysql /usr/lib/mysql
 ln -s /usr/local/mysql/include/mysql /usr/include/mysql
+/etc/init.d/mysql start
 
 ln -s /usr/local/mysql/bin/mysql /usr/bin/mysql
 ln -s /usr/local/mysql/bin/mysqldump /usr/bin/mysqldump
 ln -s /usr/local/mysql/bin/myisamchk /usr/bin/myisamchk
 
-/etc/init.d/mysql start
 /usr/local/mysql/bin/mysqladmin -u root password $password
 
 /etc/init.d/mysql restart
+/etc/init.d/mysql stop
 }
 
 phpinfo()
@@ -485,9 +491,9 @@ fi
 llsmp_tool()
 {
 cd /tmp/linuxlmp
-wget $debiantools_source
-tar zxf $debiantools
-mv $debiantools_dir/* /root/linuxlmp/
+wget $centostools_source
+tar zxf $centostools
+mv $centostools_dir/* /root/llsmp/
 }
 
 finish()
@@ -496,12 +502,12 @@ echo "========================================================================="
 echo "LinuxLMP has been set up."
 echo "Please configure in the Litespeed control panel : http://<your_ip>:7080"
 echo "========================================================================="
-echo "For more information please visit http://bbs.73yi.net/forum-46-1.html/"
+echo "For more information please visit http://bbs.73yi.net/forum-46-1.html"
 echo "========================================================================="
 echo "BYE~"
 }
 
 installed_file()
 {
-echo "LinuxLMP 0.1 Debian" >> /root/linuxlmp/.installed
+echo "LinuxLMP 0.1 CentOS" >> /root/linuxlmp/.installed
 }
