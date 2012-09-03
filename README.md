@@ -16,5 +16,5 @@ centos
 debian
 ubuntu
 
-conf.tar.gz 0.1_centostools.tar.gz 0.1_debiantools.tar.gz 0.1_ubuntutools.tar.gz sources 0.1_phpinfo.tar.gz php.ini-dist
+conf.tar.gz  centostools_0.1.tar.gz  debiantools_0.1.tar.gz  ubuntutools_0.1.tar.gz  sources  0.1_phpinfo.tar.gz  php.ini-dist
 
