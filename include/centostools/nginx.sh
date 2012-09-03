@@ -2,7 +2,7 @@
 
 clear
 echo "========================================================================="
-echo "Nginx Frontend plugin for LinuxLMP 0.6 Written by 73yi.net"
+echo "Nginx Frontend plugin for LinuxLMP 0.1 Written by 73yi.net"
 echo "========================================================================="
 echo "LinuxLMP is A tool to auto-compile & install Litespeed+MySQL+PHP on Linux "
 echo ""

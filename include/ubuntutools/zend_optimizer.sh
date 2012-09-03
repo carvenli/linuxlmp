@@ -2,11 +2,11 @@
 
 clear
 echo "========================================================================="
-echo "ionCube Installation for LLsMP 0.6 Written by w0w.me"
+echo "ionCube Installation for LinuxLMP 0.1 Written by 73yi.net"
 echo "========================================================================="
-echo "LLsMP is A tool to auto-compile & install Litespeed+MySQL+PHP on Linux "
+echo "LinuxLMP is A tool to auto-compile & install Litespeed+MySQL+PHP on Linux "
 echo ""
-echo "For more information please visit http://llsmp.org/"
+echo "For more information please visit http://bbs.73yi.net/forum-46-1.html"
 echo "========================================================================="
 echo ""
 
@@ -26,8 +26,8 @@ echo ""
 echo "========================================================================="
 echo "Installing..."
 echo "========================================================================="
-mkdir /tmp/llsmp
-cd /tmp/llsmp
+mkdir /tmp/linuxlmp
+cd /tmp/linuxlmp
 
 if [ -f /usr/local/lsws/fcgi-bin/lsphp-5.3.* ];then
 bit=$(getconf LONG_BIT)

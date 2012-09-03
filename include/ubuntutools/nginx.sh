@@ -2,23 +2,23 @@
 
 clear
 echo "========================================================================="
-echo "Nginx Frontend plugin for LLsMP 0.6 Written by w0w.me"
+echo "Nginx Frontend plugin for LinuxLMP 0.1 Written by 73yi.net"
 echo "========================================================================="
-echo "LLsMP is A tool to auto-compile & install Litespeed+MySQL+PHP on Linux "
+echo "LinuxLMP is A tool to auto-compile & install Litespeed+MySQL+PHP on Linux "
 echo ""
-echo "For more information please visit http://llsmp.org/"
+echo "For more information please visit http://bbs.73yi.net/forum-46-1.html"
 echo "========================================================================="
 echo ""
 
 check_installed()
 {
-version=$(cat /root/llsmp/.installed)
-if [ "$version" = "LLsMP 0.6 Ubuntu" ];then
+version=$(cat /root/linuxlmp/.installed)
+if [ "$version" = "LinuxLMP 0.1 Ubuntu" ];then
 echo "========================================================================="
-echo "LNLsMP installtion is being started" 
+echo "LinuxLNMP installtion is being started" 
 echo "========================================================================="
 else
-echo "LLsMP 0.6 Debian have not been installed"
+echo "LinuxLMP 0.1 Debian have not been installed"
 exit 1
 fi
 }
@@ -72,7 +72,7 @@ EOF
 /etc/init.d/lsws restart
 echo "========================================================================="
 echo "Done"
-echo "For more information, please visit LLsMP.org"
+echo "For more information, please visit http://bbs.73yi.net/forum-46-1.html"
 echo "========================================================================="
 
 #Start Installtion
@@ -220,7 +220,7 @@ update-rc.d nginx defaults
 
 echo "========================================================================="
 echo "Nginx has been installed."
-echo "Please run "sh /root/llsmp/nginx.sh" to upgrade website to LNLsMP"
-echo "For more information, please visit LLsMP.org"
+echo "Please run "sh /root/llsmp/nginx.sh" to upgrade website to LinuxLNMP"
+echo "For more information, please visit http://bbs.73yi.net/forum-46-1.html"
 echo "========================================================================="
 fi

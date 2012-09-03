@@ -8,7 +8,7 @@ fi
 
 clear
 echo "========================================================================="
-echo "Install VSFTPD for LinuxLMP V0.5,  Written by 73yi.net "
+echo "Install VSFTPD for LinuxLMP V0.1,  Written by 73yi.net "
 echo "========================================================================="
 echo "LinuxLMP is a tool to auto-compile & install Litespeed+MySQL+PHP on Linux "
 echo "This script is a tool to Install VSFTPD "

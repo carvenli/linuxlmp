@@ -2,11 +2,11 @@
 
 clear
 echo "========================================================================="
-echo "eAccelerator Installation for LLsMP 0.6 Written by w0w.me"
+echo "eAccelerator Installation for LinuxLMP 0.1 Written by 73yi.net"
 echo "========================================================================="
-echo "LLsMP is A tool to auto-compile & install Litespeed+MySQL+PHP on Linux "
+echo "LinuxLMP is A tool to auto-compile & install Litespeed+MySQL+PHP on Linux "
 echo ""
-echo "For more information please visit http://llsmp.org/"
+echo "For more information please visit http://bbs.73yi.net/forum-46-1.html"
 echo "========================================================================="
 echo ""
 
@@ -27,11 +27,11 @@ echo ""
 echo "========================================================================="
 echo "Installing..."
 echo "========================================================================="
-mkdir /tmp/llsmp
-cd /tmp/llsmp
+mkdir /tmp/linuxlmp
+cd /tmp/linuxlmp
 if [ -f /usr/local/lsws/fcgi-bin/lsphp-5.3.* ];then
-wget http://llsmp.googlecode.com/files/eaccelerator-0.9.6.1.tar.bz2
-tar xvf eaccelerator-0.9.6.1.tar.bz2
+wget http://linuxlmp.googlecode.com/files/eaccelerator-0.9.6.1.tar.gz
+tar zxvf eaccelerator-0.9.6.1.tar.gz
 mv eaccelerator-0.9.6.1 /usr/local/lsws/phpbuild/eaccelerator-0.9.6.1
 cd /usr/local/lsws/phpbuild/eaccelerator-0.9.6.1
 /usr/local/lsws/lsphp5/bin/phpize
@@ -44,15 +44,15 @@ chmod 777 /tmp/eaccelerator
 
 else
 
-wget http://llsmp.googlecode.com/files/eaccelerator-0.9.5.3.tar.bz2
-tar xvf eaccelerator-0.9.5.3.tar.bz2
-mv eaccelerator-0.9.5.3 /usr/local/lsws/phpbuild/eaccelerator-0.9.5.3
-cd /usr/local/lsws/phpbuild/eaccelerator-0.9.5.3
+wget http://linuxlmp.googlecode.com/files/eaccelerator-0.9.6.1.tar.gz
+tar zxvf eaccelerator-0.9.6.1.tar.gz
+mv eaccelerator-0.9.6.1 /usr/local/lsws/phpbuild/eaccelerator-0.9.6.1
+cd /usr/local/lsws/phpbuild/eaccelerator-0.9.6.1
 /usr/local/lsws/lsphp5/bin/phpize
 ./configure --enable-eaccelerator=shared --with-php-config=/usr/local/lsws/lsphp5/bin/php-config --with-eaccelerator-shared-memory
 make
 make install
-chown -R lsadm:lsadm /usr/local/lsws/phpbuild/eaccelerator-0.9.5.3
+chown -R lsadm:lsadm /usr/local/lsws/phpbuild/eaccelerator-0.9.6.1
 mkdir -p /tmp/eaccelerator
 chmod 777 /tmp/eaccelerator
 fi

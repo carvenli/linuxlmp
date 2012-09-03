@@ -8,11 +8,11 @@ fi
 
 clear
 echo "========================================================================="
-echo "Install VSFTPD for LLsMP V0.5,  Written by w0w.me "
+echo "Install VSFTPD for LinuxLMP V0.1,  Written by 73yi.net "
 echo "========================================================================="
-echo "LLsMP is a tool to auto-compile & install Litespeed+MySQL+PHP on Linux "
+echo "LinuxLMP is a tool to auto-compile & install Litespeed+MySQL+PHP on Linux "
 echo "This script is a tool to Install VSFTPD "
-echo "For more information please visit http://llsmp.org/"
+echo "For more information please visit http://bbs.73yi.net/forum-46-1.html"
 echo ""
 echo "========================================================================="
 
@@ -207,12 +207,7 @@ fi
 
 echo "========================================================================="
 echo "VSFTPD has been installed now!"
-echo "Please run sh /root/llsmp/vsftpd.sh for creating ftp user."
-echo "For more information,please visit http://llsmp.org."
+echo "Please run sh /root/linuxlmp/vsftpd.sh for creating ftp user."
+echo "For more information,please visit http://bbs.73yi.net/forum-46-1.html."
 echo "========================================================================="
-
-
-
-
-
 

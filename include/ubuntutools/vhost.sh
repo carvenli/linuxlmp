@@ -8,20 +8,20 @@ fi
 
 clear
 echo "========================================================================="
-echo "Create a Virtual Host for LLsMP V0.6,  Written by w0w.me "
+echo "Create a Virtual Host for LinuxLMP V0.1,  Written by 73yi.net "
 echo "========================================================================="
-echo "LLsMP is a tool to auto-compile & install Litespeed+MySQL+PHP on Linux "
+echo "LinuxLMP is a tool to auto-compile & install Litespeed+MySQL+PHP on Linux "
 echo "This script is a tool to Create virtual host for Litespeed "
-echo "For more information please visit http://llsmp.org/"
+echo "For more information please visit http://bbs.73yi.net/forum-46-1.html"
 echo ""
 echo "========================================================================="
 
 #Domain name
-domain="www.w0w.me"
+domain="www.example.com"
 echo "Please input domain:"
-read -p "(Default domain: w0w.me):" domain
+read -p "(Default domain: example.com):" domain
 if [ "$domain" = "" ]; then
-		domain="www.w0w.me"
+		domain="www.example.com"
 	fi
 if [ ! -f "/home/wwwroot/$domain/conf/vhconf.xml" ]; then
 	echo "==========================="
@@ -39,7 +39,7 @@ if [ ! -f "/home/wwwroot/$domain/conf/vhconf.xml" ]; then
 read -p "Do you want to add more domain name? (y/n)" add_more_domainame
 	
 if [ "$add_more_domainame" = 'y' ] || [ "$add_more_domainame" = 'Y' ]; then
-	  echo "Please input domain name,example(www.w0w.me,blog.w0w.me,bbs.w0w.me)"
+	  echo "Please input domain name,example(www.example.com,blog.example.com,bbs.example.com)"
 	  read -p "Please use \",\" between each domain:" moredomain
           echo "==========================="
           echo domain list="$moredomain"

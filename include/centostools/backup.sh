@@ -8,15 +8,15 @@ fi
 
 clear
 echo "========================================================================="
-echo "Backup script for LLsMP V0.6,  Written by w0w.me "
+echo "Backup script for LinuxLMP V0.1,  Written by 73yi.net "
 echo "========================================================================="
-echo "LLsMP is a tool to auto-compile & install Litespeed+MySQL+PHP on Linux "
+echo "LinuxLMP is a tool to auto-compile & install Litespeed+MySQL+PHP on Linux "
 echo "This script is a tool to backup "
-echo "For more information please visit http://llsmp.org/"
+echo "For more information please visit http://bbs.73yi.net/forum-46-1.html"
 echo ""
 echo "========================================================================="
 
-mkdir /root/llsmp/backup
+mkdir /root/linuxlmp/backup
 
 #website file
 echo "Which site would you backup?"
@@ -51,12 +51,12 @@ mv $b_file /tmp
 cd /tmp
 llsmp_f=llsmp_$domain_$(date +"%Y%m%d").tar.gz
 tar zcf $llsmp_f $b_file $db_f
-mv $llsmp_f /root/llsmp/backup
+mv $llsmp_f /root/linuxlmp/backup
 
 echo "========================================================================="
 echo "Done."
-echo "The backup file is stored as /root/llsmp/backup/$llsmp_f"
-echo "For more information please visit http://llsmp.org/"
+echo "The backup file is stored as /root/linuxlmp/backup/$llsmp_f"
+echo "For more information please visit http://bbs.73yi.net/forum-46-1.html"
 echo ""
 echo "========================================================================="
 
