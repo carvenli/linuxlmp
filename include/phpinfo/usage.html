@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>LinuxLMP Default Page</title>
+<style>
+ul,li,h2,p {margin: 0px; padding: 0px;}
+h2,p {font-size: 14px; line-height: 28px;}
+body a {color: inherit;}
+body {background: #F7F7F7;}
+#wrapper {width: 700px; margin: 0 auto;}
+#header {line-height: 50px; padding: 0 15px 0 10px; overflow: hidden; background: #C33; margin: 0 0 1em 0;}
+#site-name {float: left;} #site-name h1 {margin: 0; padding: 0; font-family: "Myriad Pro"; font-size: 24px; color: #FFF;}
+#main {width: 680px; padding: 10px; min-height: 10em; background: #FFF;}
+#menu {font-size: 12px; color: #FFF; float: right;}
+#menu li {display: inline;}
+#footer {line-height: 30px; font-size: 12px; color: #FFF; background: #333; margin: 1em 0 0 0; padding: 0 10px;}
+</style>
+</head>
+
+<body>
+<div id="wrapper">
+  <div id="header">
+  <div id="site-name"><h1>LinuxLMP Default Page</h1></div>
+    <div id="menu">
+      <ul>
+		<li><a href="./index.html">首頁</a></li>
+        <li><a href="./usage.html">使用教學</a></li>
+		<li><a href="./phpinfo.php">PHP探針</a></li>
+		<li><a href="./log.html">安裝記錄</a></li>
+      </ul>
+    </div>
+  </div>
+  <div id="main">
+  <h2>LinuxLMP 使用教學</h2>
+  <p>安裝eAccelerator : sh /root/linuxlmp/eaccelerator.sh</p>
+	<p>安裝Zend Optimizer : sh /root/linuxlmp/zend_optimizer.sh</p>
+<p>安裝ionCube Loader : sh /root/linuxlmp/ioncube.sh</p>
+<p>安裝Google Performace Tools : sh /root/linuxlmp/perftools.sh</p>
+
+<p>安裝FTP(vsftpd) : sh /root/linuxlmp/vsftpd.sh</p>
+<p>添加FTP帳號 : sh /root/linuxlmp/vsftpd.sh</p>
+<p>安裝Nginx前端 : sh /root/linuxlmp/nginx.sh</p>
+
+<p>創建Litespeed虛擬主機 : sh /root/linuxlmp/vhost.sh</p>
+<p>*創建Nginx虛擬主機 : sh /root/linuxlmp/nginx.sh</p>
+
+<p>進行備份 : sh /root/linuxlmp/backup.sh</p>
+
+<p>重啟Litespeed : /etc/init.d/lsws restart</p>
+
+<p>重啟MySQL : /etc/init.d/mysql(d) restart</p>
+
+<p>重啟Nginx : /etc/init.d/nginx restart</p>
+
+<p>Litespeed後台 : http://{ip}:7080</p>
+
+<p>phpMyAdmin : <a href="./phpmyadmin/" target=_blank">http://{ip}/phpmyadmin/</p></a>
+
+<p>php.ini目錄 : /usr/local/lsws/lsphp5/lib/php.ini</p>
+
+<p>MySQL my.cnf : /etc/my.cnf (Centos) | /etc/mysql/my.cnf (Debian/Ubuntu)</p>
+
+
+<p>Nginx conf檔案 : /etc/nginx/nginx.conf 及 /etc/nginx/conf.d/下</p>
+
+<p>虛擬主機目錄: /home/wwwroot</p>
+
+<p>虛擬主機文件權限修正 : chown -R nobody:nobody /home/wwwroot/域名/html</p>
+
+<p>LLsMP安裝記錄 : /root/linuxlmp/install.log</p>
+
+<p>*若安裝了Nginx前端，需先創建Litespeed 虛擬主機，再創建Nginx虛擬主機</p>
+
+<p>想獲得更多詳情，請到 <a href="http://bbs.73yi.net/forum-46-1.html" target="_blank">LinuxLMP论坛</a></p>
+  </div>
+  <div id="footer">Copyright by 73yi.net</div>
+</div>
+</body>
+</html>
