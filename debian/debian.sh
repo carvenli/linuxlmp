@@ -15,16 +15,16 @@ if [ $? != 0 ]; then
 fi
 clear
 echo "========================================================================="
-echo "LLsMP V0.6 for Debian Linux Written by w0w.me"
+echo "LinuxLMP V0.1 for Debian Linux Written by 73yi.net"
 echo "========================================================================="
 echo "A tool to auto-compile & install Litespeed+MySQL+PHP on Linux "
 echo ""
-echo "For more information please visit http://llsmp.org/"
+echo "For more information please visit http://bbs.73yi.net/forum-46-1.html"
 echo "========================================================================="
 
 # Check if user is root
 if [ $(id -u) != "0" ]; then
-    echo "Error: You must be root to run this script, please login as root to install llsmp"
+    echo "Error: You must be root to run this script, please login as root to install linuxlmp"
     exit 1
 fi
 

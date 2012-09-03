@@ -24,7 +24,7 @@ echo "========================================================================="
 
 # Check if user is root
 if [ $(id -u) != "0" ]; then
-    echo "Error: You must be root to run this script, please login as root to install llsmp"
+    echo "Error: You must be root to run this script, please login as root to install linuxlmp"
     exit 1
 fi
 

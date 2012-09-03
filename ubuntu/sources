@@ -10,6 +10,10 @@ php_53=php-5.3.8.tar.gz
 php_53_source=http://llsmp.googlecode.com/files/php-5.3.8.tar.gz
 php_53_ver=5.3.8
 
+php_54=php-5.4.6.tar.gz
+php_54_source=http://at.php.net/distributions/php-5.4.6.tar.gz
+php54_ver=5.4.6
+
 php_litespeed=php-litespeed-5.5.tgz
 php_litespeed_source=http://www.litespeedtech.com/packages/lsapi/php-litespeed-5.5.tgz
 
