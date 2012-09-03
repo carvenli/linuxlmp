@@ -46,18 +46,15 @@ mkdir /tmp/linuxlmp
 cd /tmp/linuxlmp
 wget http://gperftools.googlecode.com/files/gperftools-2.0.tar.gz
 tar zxvf gperftools-2.0.tar.gz
+rm -f gperftools-2.0.tar.gz
 cd gperftools-2.0
 ./configure
 make && make install
 echo "/usr/local/lib" > /etc/ld.so.conf.d/usr_local_lib.conf
 /sbin/ldconfig
 
-if [ -f /usr/local/mysql/bin/mysqld_safe ];then
-sed -i '/executing mysqld_safe'/a\ "export LD_PRELOAD=\/usr\/local\/lib\/libtcmalloc.so" /usr/local/mysql/bin/mysqld_safe
-else
 sed -i '/executing mysqld_safe'/a\ "export LD_PRELOAD=\/usr\/local\/lib\/libtcmalloc.so" /usr/bin/mysqld_safe
-fi
-/etc/init.d/mysql restart
+/etc/init.d/mysqld restart
 echo "========================================================================="
 echo "Done"
 echo "========================================================================="
