@@ -12,3 +12,9 @@ For CentOS Debian Ubuntu
 Download Here Please：
 http://code.google.com/p/linuxlmp/downloads/list
 
+centos
+debian
+ubuntu
+
+conf.tar.gz 0.1_centostools.tar.gz 0.1_debiantools.tar.gz 0.1_ubuntutools.tar.gz sources 0.1_phpinfo.tar.gz php.ini-dist
+
