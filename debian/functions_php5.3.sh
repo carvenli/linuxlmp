@@ -329,7 +329,7 @@ build_php_without_mysql()
 {
 #Build PHP 
 mkdir /usr/local/lsws/phpbuild
-cd /tmp/llsmp
+cd /tmp/linuxlmp
 wget $php_53_source
 wget $php_litespeed_source
 wget $php_53_mail_header_patch_source

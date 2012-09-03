@@ -537,7 +537,7 @@ echo "========================================================================="
 echo "LinuxLMP has been set up."
 echo "Please configure in the Litespeed control panel : http://<your_ip>:7080"
 echo "========================================================================="
-echo "For more information please visit http://llsmp.org/"
+echo "For more information please visit http://bbs.73yi.net/forum-46-1.html"
 echo "========================================================================="
 echo "BYE~"
 }
