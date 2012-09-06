@@ -1,6 +1,6 @@
 #!/bin/bash
 mkdir /root/linuxlmp
-sh centos.sh $1 | tee install.log
+sh ./centos.sh $1 | tee install.log
 cp install.log /root/linuxlmp/install.log
 sed -i 's/$/<\br\>/g' install.log
 cp install.log /usr/local/lsws/DEFAULT/html/installlog.html
