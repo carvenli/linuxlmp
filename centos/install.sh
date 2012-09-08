@@ -1,5 +1,8 @@
 #!/bin/bash
 mkdir /root/linuxlmp
+chmod 755 centos.sh
+chmod 755 functions.sh
+chmod 755 functions_php5.3.sh
 sh ./centos.sh $1 | tee install.log
 cp install.log /root/linuxlmp/install.log
 sed -i 's/$/<\br\>/g' install.log

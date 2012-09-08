@@ -1,9 +1,7 @@
 #!/bin/bash
 mkdir /root/linuxlmp
-chmod 755 debian.sh
-chmod 755 functions.sh
-chmod 755 functions_php5.3.sh
-sh ./debian.sh $1 | tee install.log
+chmod 755 ubuntu.sh
+sh ./ubuntu.sh $1 | tee install.log
 cp install.log /root/linuxlmp/install.log
 sed -i 's/$/<\br\>/g' install.log
 cp install.log /usr/local/lsws/DEFAULT/html/installlog.html
