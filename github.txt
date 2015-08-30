@@ -16,4 +16,10 @@ git commit -m neirong
 git push
 
 
+每次本地改动后，就需要执行：
+git add *
+git commit -m "Add something to test git function"
+git push
+
+
 
