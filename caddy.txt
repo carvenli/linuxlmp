@@ -1,0 +1,366 @@
+https://github.com/mholt/caddy
+
+https://caddyserver.com/
+
+custom 定制功能下载
+https://caddyserver.com/download
+
+binary and source code 已经编译好的二进制应用和原始代码
+https://github.com/mholt/caddy/releases
+
+
+cd ~
+mkdir caddy
+cd caddy
+wget https://github.com/mholt/caddy/releases/download/v0.7.5/caddy_linux_amd64.tar.gz
+tar xf caddy_linux_amd64.tar.gz
+./caddy -http2=true -root="." -port="2015"
+http://localhost:2015
+
+
+source code
+wget https://github.com/mholt/caddy/archive/v0.7.5.zip
+
+https://github.com/mholt/caddy/blob/master/README.md#getting-caddy
+
+
+
+
+创建一个配置文件，如果执行./caddy命令，会自动寻找和加载，如果程序和配置文件不在相同目录，或者配置文件名字不同，使用参数指定配置文件：caddy -conf="../path/to/Caddyfile"
+nano Caddyfile
+
+
+root /usr/local/nginx/html
+
+http://0.0.0.0:8080 {
+	redir https://0.0.0.0:4433
+}
+
+https://0.0.0.0:4433 {
+	tls cert.pem key.pem
+	gzip
+	log ./access.log
+}
+
+
+http://[::]:8080 {
+	redir https://[::]:4433
+}
+
+https://[::]:4433 {
+	tls cert.pem key.pem
+	gzip
+	log ./access.log
+}
+
+
+fastcgi / 127.0.0.1:9001 php {
+	ext .html .htm .php
+	index index.php default.php
+}
+
+
+
+http://blog.gopheracademy.com/caddy-a-look-inside/
+
+范例：
+
+
+
+
+http://gophercon.com, http://www.gophercon.com {
+    root /var/www/gc15/public
+    gzip
+    git {
+        repo  https://github.com/gophercon/gc15
+        path  ../
+        then  hugo --theme=gophercon --destination=public
+    }
+}
+
+
+
+目录
+默认就是程序执行目录，如果不同，指定路径
+
+root /home/jake/public_html
+
+
+
+通常
+localhost:2020
+gzip
+log ../access.log
+
+
+通常
+localhost
+
+gzip
+browse
+ext .html
+websocket /echo cat
+log ../access.log
+header /api Access-Control-Allow-Origin *
+
+
+
+多主机配置：
+
+http://localhost {
+	redir https://localhost
+}
+
+https://localhost {
+	tls cert.pem key.pem
+	gzip
+	log ../access.log
+}
+
+对于共享配置的站点，可以使用多个地址：
+
+localhost:2020, https://site.com, http://mysite.com {
+	...
+}
+
+
+地址：scheme://host:port
+
+localhost              # Host: localhost, Port: 2015
+localhost:8080         # Host: localhost, Port: 8080
+http://mysite.com      # Host: mysite.com, Port: 80
+https://mysite.com     # Host: mysite.com, Port: 443
+http://mysite.com:1234 # Host: mysite.com, Port: 1234
+
+
+路径匹配
+
+例如，/foo 基路径将匹配到 /foo、 /foo.html、 /foobar 和 /foo/bar.html 的要求。如果你想要限制要匹配特定目录只基路径，然后后缀以正斜杠像 foo/，这将与 /foobar 不匹配。
+
+
+
+扩展格式
+
+ext .html .htm .php
+
+
+
+代理语法
+
+proxy from to
+
+    from 是要匹配的请求可代理的基路径
+    to 是到代理服务器到目标终结点
+
+
+包含负载均衡的语法
+
+proxy from to... {
+	policy random | least_conn | round_robin
+	fail_timeout duration
+	max_fails integer
+	health_check path [duration]
+	proxy_header name value
+	without prefix
+	preset
+}
+
+
+
+例子
+
+代理 所有 /api 的请求，到一个后端
+
+proxy /api localhost:9005
+
+
+随机负载均衡
+
+proxy / web1.local:80 web2.local:90 web3.local:100
+
+
+
+proxy / web1.local:80 web2.local:90 web3.local:100 {
+	policy round_robin
+}
+
+
+
+proxy / web1.local:80 web2.local:90 web3.local:100 {
+	policy round_robin
+	health_check /health
+	proxy_header Host {host}
+	proxy_header X-Caddy-When server-{when}
+}
+
+
+
+proxy / localhost:8080 {
+	websocket
+}
+
+
+
+
+重写规则 格式
+
+rewrite from to
+
+
+    from 是要完全匹配的路径
+    to 是目标路径要重写为 (要应对的资源)
+
+使用正则表达式来设置
+
+rewrite [basepath] {
+    regexp pattern
+    ext    extensions...
+    to     to
+}
+
+
+实例
+
+
+当请求到来时为 /images/photo.jpg 时，实际上为 /images/drawing.jpg。
+
+rewrite /images/photo.jpg /images/drawing.jpg
+
+
+防止访问用 点 开头的隐藏文件
+
+rewrite {
+    r   ^\.(.*)
+    to  /403.html
+}
+
+
+若无指定的文件扩展，转发到 index.php
+
+rewrite {
+    regexp .*
+    ext    /
+    to     /index.php?_url=/{path}&{query}
+}
+
+
+
+
+
+
+
+
+
+
+
+fastcgi格式：
+
+fastcgi path endpoint [preset] {
+    ext   extension
+    split splitval
+    index indexfile
+    env   key value
+}
+
+
+PHP
+
+ext   .php
+split .php
+index index.php
+
+
+fastcgi / 127.0.0.1:9000
+
+
+转发所有 /blog 的请求到 php-fpm
+fastcgi /blog 127.0.0.1:9000 php
+
+
+自定义
+
+fastcgi / 127.0.0.1:9001 {
+	split .html
+}
+
+
+
+使用 php 预设
+
+fastcgi / 127.0.0.1:9001 php {
+	ext .html
+}
+
+
+
+
+
+
+ # nginx
+
+$ wrk -t12 -c400 -d10m http://127.0.0.1:8080
+Running 10m test @ http://127.0.0.1:8080
+  12 threads and 400 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   276.85ms  709.25ms   2.18s    87.79%
+    Req/Sec     2.84k     1.16k    6.03k    85.43%
+  20003921 requests in 10.00m, 15.82GB read
+  Socket errors: connect 0, read 251, write 0, timeout 375
+Requests/sec:  33340.08
+Transfer/sec:     26.99MB
+
+
+ # apache
+
+$ wrk -t12 -c400 -d10m http://127.0.0.1:8082
+Running 10m test @ http://127.0.0.1:8082
+  12 threads and 400 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    26.07ms   56.20ms   1.55s    99.39%
+    Req/Sec     1.51k   418.17     4.76k    72.73%
+  10685170 requests in 10.00m, 9.30GB read
+  Socket errors: connect 0, read 254, write 0, timeout 0
+Requests/sec:  17808.51
+Transfer/sec:     15.87MB
+
+
+ # caddy
+
+$ wrk -t12 -c400 -d10m http://127.0.0.1:8081
+Running 10m test @ http://127.0.0.1:8081
+  12 threads and 400 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    12.92ms    3.56ms 163.68ms   85.09%
+    Req/Sec     2.64k   295.00     4.70k    73.90%
+  18550491 requests in 10.00m, 15.13GB read
+  Socket errors: connect 0, read 260, write 0, timeout 0
+Requests/sec:  30917.56
+Transfer/sec:     25.83MB
+
+
+
+
+http://denbeke.be/blog/servers/running-caddy-server-as-a-service/
+
+Upstart脚本
+
+
+description "Caddy Server startup script"
+author "Mathias Beke"
+
+start on runlevel [2345]
+stop on runlevel [016]
+
+
+setuid some-caddy-user
+setgid some-caddy-group
+
+respawn
+respawn limit 10 5
+
+script
+    cd /home/mathias/
+    exec ./caddy
+end script
+
+

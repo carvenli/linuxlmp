@@ -1,0 +1,26 @@
+https://github.com/xyproto/http2check
+
+algernon.roboticoverlords.org
+https://github.com/xyproto/algernon
+https://github.com/xyproto/algernon/releases
+
+
+
+Install:
+aptitude install golang
+#dpkg-reconfigure golang-go
+#http://godashboard.appspot.com/
+
+go get github.com/xyproto/algernon
+#cd $GOPATH/src/github.com/xyproto/algernon
+cd /usr/lib/go/src/pkg/github.com/xyproto/algernon
+
+Run:
+
+./run
+
+/usr/lib/go/src/pkg/github.com/xyproto/algernon
+
+./algernon
+
+

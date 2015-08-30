@@ -1,0 +1,579 @@
+Welcome to the shadowsocks-go wiki!
+
+
+++++++++++++++++++++++===================================================================
+++++++++++++++++++++++===================================================================
+CentOS上安装ShadowSocks-go版本
+Ⅰ 、安装Go所需要的依赖库
+yum install mercurial 
+yum install git
+yum install gcc
+Ⅱ、安装Go
+mkdir tools
+cd tools
+mkdir go
+cd  go
+wget https://go.googlecode.com/files/go1.2.linux-amd64.tar.gz
+tar -zxvf go1.2.linux-amd64.tar.gz
+pwd
+/tools/go/go
+Ⅲ、设置Go的pkg目录
+mkdir gopkg
+pwd
+/tools/go/gopkg
+Ⅳ、编辑/etc/profile文件、添加Go的环境变量
+export GOROOT=/tools/go/go
+export PATH=$GOROOT/bin:$PATH
+export GOPATH=/tools/go/gopkg
+保存之后运行source /etc/profile
+然后运行go version查看是否安装成功、如果出现 go version go1.2 …..表示成功了。
+Ⅴ、开始安装ShadowSocks-go版本
+go get github.com/shadowsocks/shadowsocks-go/cmd/shadowsocks-server
+Ⅵ、编辑配置文件
+切换到go/gopkg/bin目录、运行vim config.json命令、创建配置文件
+
+{
+"server":"my_server_ip",
+"server_port":10086,
+"local_port":1080,
+"password":"password",
+"port_password":
+    {
+    "10087":"abcdefg",
+    "10088":"123456789"
+    },
+"timeout":600,
+"method":"table"
+}
+
+配置了port_password之后前面的server_port和password将不启用
+
+Ⅶ、启动ShadowSocks
+./shadowsocks-server    当前用户运行、退出ssh后程序也退出了
+./shadowsocks-server > log &  后台运行、日志写入log里面
+修改'vim /etc/rc.d/rc.local'添加开机启动
+'nohup /root/tools/.../shadowsocks-server -c /root/tools/.../config.json > log &'
+
+
+www.cz-s.cn/inst.shh, centos 一键安装go环境和ss-go还有限速的脚本：
+export GOROOT=/usr/local/go && export GOPATH=/tools/go && export GOOS=linux && export GOARCH=386 && export GOBIN=$GOROOT/bin && export PATH=$PATH:$GOBIN && yum install gcc mercurial git make automake -y && rm -rf /usr/local/go && hg clone -r release https://go.googlecode.com/hg/ $GOROOT && cd $GOROOT/src && ./all.bash 
+go get github.com/shadowsocks/shadowsocks-go/cmd/shadowsocks-server
+
+
+
+
+# Check If You Are Root
+if [ $(id -u) != "0" ]; then
+    clear
+    echo -e "\033[31m Error: You must be root to run this script! \033[0m"
+    exit 1
+fi
+
+if [ $(arch) == x86_64 ]; then
+    OSB=x86_64
+elif [ $(arch) == i686 ]; then
+    OSB=i386
+else
+    echo "\033[31m Error: Unable to Determine OS Bit. \033[0m"
+    exit 1
+fi
+if egrep -q "5.*" /etc/issue; then
+    OST=5
+    wget http://dl.fedoraproject.org/pub/epel/5/${OSB}/epel-release-5-4.noarch.rpm
+elif egrep -q "6.*" /etc/issue; then
+    OST=6
+    wget http://dl.fedoraproject.org/pub/epel/6/${OSB}/epel-release-6-8.noarch.rpm
+else
+    echo "\033[31m Error: Unable to Determine OS Version. \033[0m"
+    exit 1
+fi
+
+rpm -Uvh epel-release*rpm
+yum install -y libnet libnet-devel libpcap libpcap-devel gcc
+
+wget http://net-speeder.googlecode.com/files/net_speeder-v0.1.tar.gz -O -|tar xz
+cd net_speeder
+if [ -f /proc/user_beancounters ] || [ -d /proc/bc ]; then
+    sh build.sh -DCOOKED
+    INTERFACE=venet0
+else
+    sh build.sh
+    INTERFACE=eth0
+fi
+
+NS_PATH=/usr/local/net_speeder
+mkdir -p $NS_PATH
+cp -Rf net_speeder $NS_PATH
+
+echo -e "\033[36m net_speeder installed. \033[0m"
+echo -e "\033[36m Usage: nohup ${NS_PATH}/net_speeder $INTERFACE \"ip\" >/dev/null 2>&1 & \033[0m"
+echo "finish"
+
+
+
+++++++++++++++++++++++===================================================================
+++++++++++++++++++++++===================================================================
+
+Shadowsocks-go一键安装脚本 系统支持：CentOS，Debian，Ubuntu  shadowsocks 最新版本 1.1.4
+脚本内容：https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocks-go.sh
+#! /bin/bash
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
+export PATH
+#===============================================================================================
+#   System Required:  CentOS, Debian, Ubuntu
+#   Description: One click Install Shadowsocks-go server
+#   Author: Teddysun <i@teddysun.com>
+#   Thanks: @cyfdecyf <https://twitter.com/cyfdecyf>
+#   Intro:  http://teddysun.com/392.html
+#===============================================================================================
+
+clear
+echo ""
+echo "#############################################################"
+echo "# One click Install Shadowsocks-go server                   #"
+echo "# Intro: http://teddysun.com/392.html                       #"
+echo "# Author: Teddysun <i@teddysun.com>                         #"
+echo "# Thanks: @cyfdecyf <https://twitter.com/cyfdecyf>          #"
+echo "#############################################################"
+echo ""
+
+# Make sure only root can run our script
+function rootness(){
+    if [[ $EUID -ne 0 ]]; then
+       echo "Error:This script must be run as root!" 1>&2
+       exit 1
+    fi
+}
+
+# Check OS
+function checkos(){
+    if [ -f /etc/redhat-release ];then
+        OS=CentOS
+    elif [ ! -z "`cat /etc/issue | grep bian`" ];then
+        OS=Debian
+    elif [ ! -z "`cat /etc/issue | grep Ubuntu`" ];then
+        OS=Ubuntu
+    else
+        echo "Not supported OS, Please reinstall OS and retry!"
+        exit 1
+    fi
+}
+
+# Get version
+function getversion(){
+    if [[ -s /etc/redhat-release ]];then
+        grep -oE  "[0-9.]+" /etc/redhat-release
+    else    
+        grep -oE  "[0-9.]+" /etc/issue
+    fi    
+}
+
+# CentOS version
+function centosversion(){
+    local code=$1
+    local version="`getversion`"
+    local main_ver=${version%%.*}
+    if [ $main_ver == $code ];then
+        return 0
+    else
+        return 1
+    fi        
+}
+
+# is 64bit or not
+function is_64bit(){
+    if [ `getconf WORD_BIT` = '32' ] && [ `getconf LONG_BIT` = '64' ] ; then
+        return 0
+    else
+        return 1
+    fi        
+}
+
+# Disable selinux
+function disable_selinux(){
+if [ -s /etc/selinux/config ] && grep 'SELINUX=enforcing' /etc/selinux/config; then
+    sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
+    setenforce 0
+fi
+}
+
+# Pre-installation settings
+function pre_install(){
+    # Set shadowsocks-go config password
+    echo "Please input password for shadowsocks-go:"
+    read -p "(Default password: teddysun.com):" shadowsockspwd
+    [ -z "$shadowsockspwd" ] && shadowsockspwd="teddysun.com"
+    echo ""
+    echo "---------------------------"
+    echo "password = $shadowsockspwd"
+    echo "---------------------------"
+    echo ""
+    # Set shadowsocks-go config port
+    while true
+    do
+    echo -e "Please input port for shadowsocks-go [1-65535]:"
+    read -p "(Default port: 8989):" shadowsocksport
+    [ -z "$shadowsocksport" ] && shadowsocksport="8989"
+    expr $shadowsocksport + 0 &>/dev/null
+    if [ $? -eq 0 ]; then
+        if [ $shadowsocksport -ge 1 ] && [ $shadowsocksport -le 65535 ]; then
+            echo ""
+            echo "---------------------------"
+            echo "port = $shadowsocksport"
+            echo "---------------------------"
+            echo ""
+            break
+        else
+            echo "Input error! Please input correct numbers."
+        fi
+    else
+        echo "Input error! Please input correct numbers."
+    fi
+    done
+    get_char(){
+        SAVEDSTTY=`stty -g`
+        stty -echo
+        stty cbreak
+        dd if=/dev/tty bs=1 count=1 2> /dev/null
+        stty -raw
+        stty echo
+        stty $SAVEDSTTY
+    }
+    echo ""
+    echo "Press any key to start...or Press Ctrl+C to cancel"
+    char=`get_char`
+    #Install necessary dependencies
+    if [ "$OS" == 'CentOS' ];then
+        yum install -y wget unzip gzip curl
+    else
+        apt-get -y update
+        apt-get install -y wget unzip gzip curl
+    fi
+    # Get IP address
+    echo "Getting Public IP address, Please wait a moment..."
+    IP=$(curl -s -4 icanhazip.com)
+    if [[ "$IP" = "" ]]; then
+        IP=$(curl -s -4 ipinfo.io | grep "ip" | awk -F\" '{print $4}')
+    fi
+    echo -e "Your main public IP is\t\033[32m$IP\033[0m"
+    echo ""
+    #Current folder
+    cur_dir=`pwd`
+}
+
+# Download shadowsocks-go
+function download_files(){
+    cd $cur_dir
+    if is_64bit; then
+        if ! wget -c http://lamp.teddysun.com/shadowsocks/shadowsocks-server-linux64-1.1.4.gz;then
+            echo "Failed to download shadowsocks-server-linux64-1.1.4.gz"
+            exit 1
+        fi
+        gzip -d shadowsocks-server-linux64-1.1.4.gz
+        if [ $? -eq 0 ];then
+            echo "Decompress shadowsocks-server-linux64-1.1.4.gz success."
+        else
+            echo "Decompress shadowsocks-server-linux64-1.1.4.gz failed! Please check gzip command."
+            exit 1
+        fi
+        mv -f shadowsocks-server-linux64-1.1.4 /usr/bin/shadowsocks-server
+    else
+        if ! wget -c http://lamp.teddysun.com/shadowsocks/shadowsocks-server-linux32-1.1.4.gz;then
+            echo "Failed to download shadowsocks-server-linux32-1.1.4.gz"
+            exit 1
+        fi
+        gzip -d shadowsocks-server-linux32-1.1.4.gz
+        if [ $? -eq 0 ];then
+            echo "Decompress shadowsocks-server-linux32-1.1.4.gz success."
+        else
+            echo "Decompress shadowsocks-server-linux32-1.1.4.gz failed! Please check gzip command."
+            exit 1
+        fi
+        mv -f shadowsocks-server-linux32-1.1.4 /usr/bin/shadowsocks-server
+    fi
+
+    # Download start script
+    if [ "$OS" == 'CentOS' ];then
+        if ! wget --no-check-certificate -O shadowsocks-go https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocks-go; then
+            echo "Failed to download shadowsocks-go auto start script!"
+            exit 1
+        fi
+    else
+        if ! wget --no-check-certificate -O shadowsocks-go https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocks-go-debian; then
+            echo "Failed to download shadowsocks-go auto start script!"
+            exit 1
+        fi
+    fi
+}
+
+# Config shadowsocks
+function config_shadowsocks(){
+    if [ ! -d /etc/shadowsocks ];then
+        mkdir /etc/shadowsocks
+    fi
+    cat > /etc/shadowsocks/config.json<<-EOF
+{
+    "server":"0.0.0.0",
+    "server_port":${shadowsocksport},
+    "local_port":1080,
+    "password":"${shadowsockspwd}",
+    "method":"aes-256-cfb",
+    "timeout":600
+}
+EOF
+}
+
+# iptables set
+function iptables_set(){
+    echo "iptables start setting..."
+    /sbin/service iptables status 1>/dev/null 2>&1
+    if [ $? -eq 0 ]; then
+        /etc/init.d/iptables status | grep '${shadowsocksport}' | grep 'ACCEPT' >/dev/null 2>&1
+        if [ $? -ne 0 ]; then
+            /sbin/iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport ${shadowsocksport} -j ACCEPT
+            /etc/init.d/iptables save
+            /etc/init.d/iptables restart
+        else
+            echo "port ${shadowsocksport} has been set up."
+        fi
+    else
+        echo "iptables looks like shutdown, please manually set it if necessary."
+    fi
+}
+
+# Install 
+function install_go(){
+    # Install shadowsocks-go
+    if [ -s /usr/bin/shadowsocks-server ]; then
+        echo "shadowsocks-go install success!"
+        chmod +x /usr/bin/shadowsocks-server
+        mv $cur_dir/shadowsocks-go /etc/init.d/shadowsocks
+        chmod +x /etc/init.d/shadowsocks
+        # Add run on system start up
+        if [ "$OS" == 'CentOS' ]; then
+            chkconfig --add shadowsocks
+            chkconfig shadowsocks on
+        else
+            update-rc.d shadowsocks defaults
+        fi
+        # Start shadowsocks
+        /etc/init.d/shadowsocks start
+        if [ $? -eq 0 ]; then
+            echo "Shadowsocks-go start success!"
+        else
+            echo "Shadowsocks-go start failure!"
+        fi
+    else
+        echo ""
+        echo "shadowsocks-go install failed!"
+        exit 1
+    fi
+    cd $cur_dir
+    clear
+    echo ""
+    echo "Congratulations, shadowsocks-go install completed!"
+    echo -e "Your Server IP: \033[41;37m ${IP} \033[0m"
+    echo -e "Your Server Port: \033[41;37m ${shadowsocksport} \033[0m"
+    echo -e "Your Password: \033[41;37m ${shadowsockspwd} \033[0m"
+    echo -e "Your Local Port: \033[41;37m 1080 \033[0m"
+    echo -e "Your Encryption Method: \033[41;37m aes-256-cfb \033[0m"
+    echo ""
+    echo "Welcome to visit:http://teddysun.com/392.html"
+    echo "Enjoy it!"
+    echo ""
+    exit 0
+}
+
+# Uninstall Shadowsocks-go
+function uninstall_shadowsocks_go(){
+    printf "Are you sure uninstall shadowsocks-go? (y/n) "
+    printf "\n"
+    read -p "(Default: n):" answer
+    if [ -z $answer ]; then
+        answer="n"
+    fi
+    if [ "$answer" = "y" ]; then
+        ps -ef | grep -v grep | grep -v ps | grep -i "shadowsocks-server" > /dev/null 2>&1
+        if [ $? -eq 0 ]; then
+            /etc/init.d/shadowsocks stop
+        fi
+        checkos
+        if [ "$OS" == 'CentOS' ]; then
+            chkconfig --del shadowsocks
+        else
+            update-rc.d -f shadowsocks remove
+        fi
+        # delete config file
+        rm -rf /etc/shadowsocks
+        # delete shadowsocks
+        rm -f /etc/init.d/shadowsocks
+        rm -f /usr/bin/shadowsocks-server
+        echo "Shadowsocks-go uninstall success!"
+    else
+        echo "Uninstall cancelled, Nothing to do"
+    fi
+}
+
+# Install Shadowsocks-go
+function install_shadowsocks_go(){
+    checkos
+    rootness
+    disable_selinux
+    pre_install
+    download_files
+    config_shadowsocks
+    if [ "$OS" == 'CentOS' ]; then
+        if ! centosversion 7; then
+            iptables_set
+        fi
+    fi
+    install_go
+}
+
+# Initialization step
+action=$1
+[  -z $1 ] && action=install
+case "$action" in
+install)
+    install_shadowsocks_go
+    ;;
+uninstall)
+    uninstall_shadowsocks_go
+    ;;
+*)
+    echo "Arguments error! [${action} ]"
+    echo "Usage: `basename $0` {install|uninstall}"
+    ;;
+esac
+
+ 默认配置：
+服务器端口：自己设定（如不设定，默认为 8989）
+客户端端口：1080
+密码：自己设定（如不设定，默认为teddysun.com）
+
+客户端下载：
+http://sourceforge.net/projects/shadowsocksgui/files/dist/
+
+使用方法：
+使用root用户登录，运行以下命令：
+wget --no-check-certificate https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocks-go.sh
+chmod +x shadowsocks-go.sh
+./shadowsocks-go.sh 2>&1 | tee shadowsocks-go.log
+安装完成后，脚本提示如下：
+Congratulations, shadowsocks-go install completed!
+Your Server IP:your_server_ip
+Your Server Port:your_server_port
+Your Password:your_password
+Your Local Port:1080
+Your Encryption Method:aes-256-cfb
+
+Welcome to visit:http://teddysun.com/392.html
+Enjoy it!
+ 卸载方法：
+使用 root 用户登录，运行以下命令：
+./shadowsocks-go.sh uninstall
+可以查看 shadowsocks-go 进程是否已经启动：
+/etc/init.d/shadowsocks status
+使用命令：
+启动：/etc/init.d/shadowsocks start
+停止：/etc/init.d/shadowsocks stop
+重启：/etc/init.d/shadowsocks restart
+状态：/etc/init.d/shadowsocks status
+
+
+++++++++++++++++++++++===================================================================
+++++++++++++++++++++++===================================================================
+
+centos 7 x64版本，Golang 1.4 部署
+
+ 第一部：部署 Golang 环境。
+
+打开 Golang 官方下载页：https://golang.org/dl/
+下载你需要的版本。由于我们服务端在linux下，因此使用的版本是：go1.4.linux-amd64.tar.gz
+我们很容易得到一个下载链接。
+现在我们用 SSH 软件连接 VPS 。
+例如，在 /root 目录执行以下命令： 
+wget https://storage.googleapis.com/golang/go1.4.linux-amd64.tar.gz --no-check-certificate
+下载到一个 tar.gz 安装包。
+执行：
+tar zxvf go1.4.linux-amd64.tar.gz
+得到一个名为 Go 的文件夹。
+之后执行：
+mv go /usr/local/go
+2：配置 Go 环境变量。
+修改 /etc/profile： 
+vi /etc/profile
+在文件的底部，添加这样的环境变量配置：
+#Go Configuration
+export GOROOT=/usr/local/go
+这是你Go的安装目录
+export GOARCH=amd64
+这是你的处理器类型……例如i386，amd64
+export GOOS=linux
+这是你的操作系统类型。
+export GOPATH=root/workstation/go
+这是你的 Go 项目文件夹，如果我们采用已经编译完成的软件包，就不需要这个
+export PATH=$GOROOT/bin:$PATH
+你的Go命令文件夹，请保持默认……
+3：更新环境变量设置 
+source /etc/profile
+然后，执行
+go version
+4：安装各种GoGetTools。
+如果你不想编译，请略过这一步…… 
+svn - Subversion, download at: http://subversion.apache.org/packages.html
+hg - Mercurial, download at http://mercurial.selenic.com/wiki/Download
+git - Git, download at http://git-scm.com/downloads
+bzr - Bazaar, download at http://wiki.bazaar.canonical.com/Download
+我们需要的是Git和HG
+yum install git -y
+yum install '*mercurial*'
+yum install gcc
+5：安装 shadowsocks-go
+如果想用现成的版本，直接看6～ 
+go get github.com/shadowsocks/shadowsocks-go/cmd/shadowsocks-server
+注意你环境变量 export GOPATH 目录的权限问题！
+打开 root/workstation/go/bin。这就是你的shadowsocks安装目录……
+6：下载现成版本。
+http://dl.chenyufei.info/shadowsocks/ 
+下载你需要的版本。然后 
+gzip -d 文件名
+就输出shadowsocks执行文件了。
+
+7：Configuration。
+Shadowsocks-go在启动时会扫描当前目录下的config.json文件。于是你需要在它的安装目录创建一个config.json：
+如果你没有特殊的需求，这样写： 
+{
+"server":"104.224.155.124",
+"server_port":55555
+"password":“1111”
+"timeout":600,
+"method":"rc4-md5"
+}
+8：启动。
+让 shadowsocks-go 保持后台运行的最佳方法是： 
+./shadowsocks-server > log &  
+9：Multi-User。
+实现方式：用port password 替代server_port 和password字段。
+实例： 
+{
+"server":"104.224.155.124",
+"port_password": 
+{
+"23331": "ss1",	
+"23332": "ss2",
+"23333": "ss3"
+},
+"timeout":600,
+"method":"rc4-md5"
+}
+10：Multi-Server：For Linux Fans！#^_^#
+实现方式一样很简单：用 server_password 替换原有的 Server,Server_port，method和passwd字段。
+实例： 
+{
+	"local_port": 1080,
+	"server_password": [
+		["127.0.0.1:8387", “ss1", “rc4-md5”],
+		["127.0.0.1:8388", "ss2", "aes-128-cfb"]
+	]
+}
