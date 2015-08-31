@@ -28,4 +28,39 @@ git pull
 git fetch
 git merge
 
+git fetch
+git merge origin/master
+
+git push
+
+
+git remote add origin https://github.com/doggy8088/sandbox-empty2.git
+git remote add upstream https://github.com/doggy8088/sandbox-empty2.git
+git remote add jquery https://github.com/jquery/jquery.git
+git remote -v
+git fetch
+
+nano .git\config
+
+
+
+git pull <remote> <branch>
+
+git branch --set-upstream-to=origin/<branch> smtp
+
+git remote -v
+
+
+git push origin FixForCRLF
+
+
+
+
+
+
+
+
+
+
+
 
